@@ -94,4 +94,4 @@ People experiencing homelessness often need specific items quickly, while donors
 This is a capstone project. Contributions are welcome via issues and pull requests. Please follow the code style and add tests where possible.
 
 ## License
-TBD
+MIT
