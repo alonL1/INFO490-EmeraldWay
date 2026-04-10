@@ -85,10 +85,7 @@ export function RoleNav({ activeKey, className, variant }: RoleNavProps) {
     <nav
       aria-label={`${variant} primary navigation`}
       data-variant={variant}
-      className={cn(
-        "flex flex-wrap items-center gap-3 sm:gap-4 lg:gap-5",
-        className,
-      )}
+      className={cn("site-nav", className)}
     >
       {items.map((item) => {
         const Icon = iconFor(item.key);
@@ -100,11 +97,11 @@ export function RoleNav({ activeKey, className, variant }: RoleNavProps) {
             href={item.href}
             aria-current={isActive ? "page" : undefined}
             className={cn(
-              "group inline-flex items-center gap-2 rounded-full border border-transparent px-3 py-2 font-ui text-base font-bold capitalize text-brand-cream transition duration-200 hover:bg-white/10 hover:text-white sm:text-lg lg:px-4 lg:py-2.5 lg:text-xl",
-              isActive && "bg-white/10 text-white",
+              "site-nav__link",
+              isActive && "site-nav__link--active",
             )}
           >
-            <Icon className="h-4 w-4 shrink-0 sm:h-5 sm:w-5 lg:h-5 lg:w-5" />
+            <Icon className="site-nav__icon" />
             <span>{item.label}</span>
           </Link>
         );

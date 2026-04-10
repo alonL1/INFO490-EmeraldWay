@@ -7,7 +7,7 @@ type ItemGridProps = {
 
 export function ItemGrid({ items }: ItemGridProps) {
   return (
-    <section className="grid gap-5 sm:grid-cols-2 lg:gap-6 xl:grid-cols-3">
+    <section className="item-grid">
       {items.map((item) => (
         <ItemCard key={item.id} item={item} />
       ))}

@@ -14,7 +14,7 @@ export function CompassMark({ className, priority = false }: CompassMarkProps) {
       width={88}
       height={113}
       priority={priority}
-      className={cn("h-auto w-10 sm:w-12 lg:w-14", className)}
+      className={cn("h-auto w-[clamp(2.5rem,7vw,3.5rem)]", className)}
     />
   );
 }

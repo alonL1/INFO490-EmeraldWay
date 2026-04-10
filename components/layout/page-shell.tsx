@@ -19,12 +19,7 @@ export function PageShell({
   return (
     <div className="min-h-screen bg-surface-canvas">
       <SiteHeader activeKey={activeKey} variant={variant} />
-      <main
-        className={cn(
-          "mx-auto w-full max-w-layout-max px-4 pb-12 pt-6 sm:px-6 sm:pt-8 lg:px-page-gutter lg:pb-16",
-          className,
-        )}
-      >
+      <main className={cn("page-shell", className)}>
         {children}
       </main>
     </div>

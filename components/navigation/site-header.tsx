@@ -10,13 +10,13 @@ type SiteHeaderProps = {
 
 export function SiteHeader({ activeKey, variant }: SiteHeaderProps) {
   return (
-    <header className="w-full bg-surface-header text-text-inverse shadow-[0_8px_24px_rgba(65,93,67,0.16)]">
-      <div className="mx-auto flex max-w-layout-max flex-col gap-5 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:gap-8 lg:px-page-gutter lg:py-5">
-        <div className="flex items-center gap-3 sm:gap-4">
+    <header className="site-header">
+      <div className="site-header__inner">
+        <div className="site-header__brand">
           <CompassMark priority />
           <Wordmark />
         </div>
-        <RoleNav variant={variant} activeKey={activeKey} className="justify-start lg:justify-end" />
+        <RoleNav variant={variant} activeKey={activeKey} />
       </div>
     </header>
   );
