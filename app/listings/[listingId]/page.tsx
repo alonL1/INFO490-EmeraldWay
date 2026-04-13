@@ -25,10 +25,12 @@ export default async function ListingPage({ params }: ListingPageProps) {
     notFound();
   }
 
+  const profiles = listing.profiles as unknown as { org_name: string } | null;
+
   const item: ItemRecord = {
     id: listing.id,
     title: listing.title,
-    organization: (listing.profiles as unknown as { org_name: string }).org_name,
+    organization: profiles?.org_name ?? "Unknown Organization",
     imageSrc: listing.image_url,
     imageAlt: `${listing.title} donation request`,
     condition: listing.condition ?? "Not specified",
