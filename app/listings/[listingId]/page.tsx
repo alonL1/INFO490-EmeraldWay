@@ -2,7 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageShell } from "@/components/layout/page-shell";
-import { itemsById } from "@/lib/mock/items";
+import { createClient } from "@/lib/supabase/server";
+import type { ItemRecord } from "@/lib/types/item";
 
 type ListingPageProps = {
   params: Promise<{
@@ -10,17 +11,35 @@ type ListingPageProps = {
   }>;
 };
 
-export async function generateStaticParams() {
-  return Object.keys(itemsById).map((listingId) => ({ listingId }));
-}
-
 export default async function ListingPage({ params }: ListingPageProps) {
   const { listingId } = await params;
-  const item = itemsById[listingId];
 
-  if (!item) {
+  const supabase = await createClient();
+  const { data: listing } = await supabase
+    .from("listings")
+    .select("*, profiles(org_name)")
+    .eq("id", listingId)
+    .single();
+
+  if (!listing) {
     notFound();
   }
+
+  const profiles = listing.profiles as unknown as { org_name: string } | null;
+
+  const item: ItemRecord = {
+    id: listing.id,
+    title: listing.title,
+    organization: profiles?.org_name ?? "Unknown Organization",
+    imageSrc: listing.image_url,
+    imageAlt: `${listing.title} donation request`,
+    condition: listing.condition ?? "Not specified",
+    description: listing.description ?? "",
+    itemType: listing.item_type ?? "General",
+    location: listing.location ?? "Seattle, WA",
+    priority: listing.priority,
+    status: listing.status,
+  };
 
   return (
     <PageShell activeKey="home" variant="nonprofit">
@@ -47,14 +66,18 @@ export default async function ListingPage({ params }: ListingPageProps) {
           </div>
           <div className="overflow-hidden rounded-[28px] border border-brand-forest/10 bg-white shadow-panel">
             <div className="relative aspect-[4/3] w-full bg-brand-cream/35">
-              <Image
-                src={item.imageSrc}
-                alt={item.imageAlt}
-                fill
-                className="object-cover"
-                sizes="(min-width: 1024px) 58vw, 100vw"
-                priority
-              />
+              {item.imageSrc ? (
+                <Image
+                  src={item.imageSrc}
+                  alt={item.imageAlt}
+                  fill
+                  className="object-cover"
+                  sizes="(min-width: 1024px) 58vw, 100vw"
+                  priority
+                />
+              ) : (
+                <div className="absolute inset-0 bg-brand-cream/35" />
+              )}
             </div>
             <div className="space-y-4 p-6">
               <p className="font-body text-base leading-7 text-text-primary/80">
@@ -114,4 +137,3 @@ export default async function ListingPage({ params }: ListingPageProps) {
     </PageShell>
   );
 }
-

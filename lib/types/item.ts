@@ -2,7 +2,7 @@ export type ItemSummary = {
   id: string;
   title: string;
   organization: string;
-  imageSrc: string;
+  imageSrc: string | null;
   imageAlt: string;
 };
 

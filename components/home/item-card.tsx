@@ -15,13 +15,17 @@ export function ItemCard({ item }: ItemCardProps) {
         aria-label={`View ${item.title}`}
       >
         <div className="item-card__media">
-          <Image
-            src={item.imageSrc}
-            alt={item.imageAlt}
-            fill
-            className="object-cover transition duration-300 group-hover:scale-[1.02]"
-            sizes="(min-width: 1200px) 22vw, (min-width: 900px) 34vw, (min-width: 640px) 28vw, 44vw"
-          />
+          {item.imageSrc ? (
+            <Image
+              src={item.imageSrc}
+              alt={item.imageAlt}
+              fill
+              className="object-cover transition duration-300 group-hover:scale-[1.02]"
+              sizes="(min-width: 1200px) 22vw, (min-width: 900px) 34vw, (min-width: 640px) 28vw, 44vw"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-brand-cream/35" />
+          )}
         </div>
         <div className="item-card__content">
           <h3 className="item-card__title">

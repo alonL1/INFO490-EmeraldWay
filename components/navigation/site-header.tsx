@@ -1,6 +1,7 @@
 import { CompassMark } from "@/components/brand/compass-mark";
 import { Wordmark } from "@/components/brand/wordmark";
 import { RoleNav } from "@/components/navigation/role-nav";
+import { AuthButton } from "@/components/auth/auth-button";
 import type { NavKey, NavVariant } from "@/lib/types/nav";
 
 type SiteHeaderProps = {
@@ -17,6 +18,7 @@ export function SiteHeader({ activeKey, variant }: SiteHeaderProps) {
           <Wordmark />
         </div>
         <RoleNav variant={variant} activeKey={activeKey} />
+        <AuthButton />
       </div>
     </header>
   );
