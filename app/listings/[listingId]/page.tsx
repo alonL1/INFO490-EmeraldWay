@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageShell } from "@/components/layout/page-shell";
+import { getDemoItemById } from "@/lib/mock/demo-items";
 import { createClient } from "@/lib/supabase/server";
 import type { ItemRecord } from "@/lib/types/item";
 
@@ -21,25 +22,31 @@ export default async function ListingPage({ params }: ListingPageProps) {
     .eq("id", listingId)
     .single();
 
-  if (!listing) {
+  const demoItem = !listing ? getDemoItemById(listingId) : null;
+
+  if (!listing && !demoItem) {
     notFound();
   }
 
-  const profiles = listing.profiles as unknown as { org_name: string } | null;
+  const item: ItemRecord = demoItem
+    ? demoItem
+    : (() => {
+        const profiles = listing.profiles as unknown as { org_name: string } | null;
 
-  const item: ItemRecord = {
-    id: listing.id,
-    title: listing.title,
-    organization: profiles?.org_name ?? "Unknown Organization",
-    imageSrc: listing.image_url,
-    imageAlt: `${listing.title} donation request`,
-    condition: listing.condition ?? "Not specified",
-    description: listing.description ?? "",
-    itemType: listing.item_type ?? "General",
-    location: listing.location ?? "Seattle, WA",
-    priority: listing.priority,
-    status: listing.status,
-  };
+        return {
+          id: listing.id,
+          title: listing.title,
+          organization: profiles?.org_name ?? "Unknown Organization",
+          imageSrc: listing.image_url,
+          imageAlt: `${listing.title} donation request`,
+          condition: listing.condition ?? "Not specified",
+          description: listing.description ?? "",
+          itemType: listing.item_type ?? "General",
+          location: listing.location ?? "Seattle, WA",
+          priority: listing.priority,
+          status: listing.status,
+        };
+      })();
 
   return (
     <PageShell activeKey="home" variant="nonprofit">
@@ -128,8 +135,9 @@ export default async function ListingPage({ params }: ListingPageProps) {
               Next Step
             </p>
             <p className="mt-2 font-body text-sm leading-6 text-text-primary/75">
-              This route is wired and ready for real backend data once the donation
-              workflow is connected.
+              {item.isDemo
+                ? "This is temporary demo content. Real listings appear here automatically once records exist in Supabase."
+                : "This route is wired and ready for real backend data once the donation workflow is connected."}
             </p>
           </div>
         </aside>

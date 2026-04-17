@@ -1,6 +1,7 @@
 import { FilterSidebar } from "@/components/home/filter-sidebar";
 import { ItemGrid } from "@/components/home/item-grid";
 import { PageShell } from "@/components/layout/page-shell";
+import { demoItemSummaries } from "@/lib/mock/demo-items";
 import { createClient } from "@/lib/supabase/server";
 import type { ItemSummary } from "@/lib/types/item";
 
@@ -11,7 +12,7 @@ export default async function HomePage() {
     .select("id, title, image_url, profiles(org_name)")
     .order("created_at", { ascending: false });
 
-  const items: ItemSummary[] = (data ?? [])
+  const dbItems: ItemSummary[] = (data ?? [])
     .filter((l) => l.profiles !== null)
     .map((l) => ({
       id: l.id,
@@ -20,6 +21,8 @@ export default async function HomePage() {
       imageSrc: l.image_url,
       imageAlt: `${l.title} donation request`,
     }));
+
+  const items: ItemSummary[] = [...dbItems, ...demoItemSummaries];
 
   return (
     <PageShell activeKey="home" variant="nonprofit">
