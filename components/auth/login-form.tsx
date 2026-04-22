@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { LoadingSpinner } from '@/components/shared/loading-spinner'
 
 export function LoginForm() {
   const router = useRouter()
@@ -46,6 +47,7 @@ export function LoginForm() {
             id="email"
             type="email"
             required
+            disabled={loading}
             autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -61,6 +63,7 @@ export function LoginForm() {
             id="password"
             type="password"
             required
+            disabled={loading}
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -75,9 +78,16 @@ export function LoginForm() {
         <button
           type="submit"
           disabled={loading}
-          className="rounded-full bg-brand-forest px-5 py-3 font-ui text-sm font-bold text-brand-cream disabled:opacity-60"
+          className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-forest px-5 py-3 font-ui text-sm font-bold text-brand-cream disabled:cursor-wait disabled:opacity-60"
         >
-          {loading ? 'Signing in...' : 'Sign in'}
+          {loading ? (
+            <>
+              <LoadingSpinner className="text-brand-cream" label="Signing in" />
+              <span>Signing in...</span>
+            </>
+          ) : (
+            'Sign in'
+          )}
         </button>
       </form>
 

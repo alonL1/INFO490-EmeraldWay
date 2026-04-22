@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { normalizeAppRole, type AppRole } from '@/lib/types/app-role'
+import { LoadingSpinner } from '@/components/shared/loading-spinner'
 
 export function SignupForm() {
   const router = useRouter()
@@ -53,38 +54,40 @@ export function SignupForm() {
             I am signing up as
           </span>
           <div className="grid gap-3 sm:grid-cols-2">
-            <label className="rounded-[20px] border border-brand-forest/15 bg-brand-cream/20 px-4 py-3 text-left">
-              <input
-                type="radio"
-                name="role"
-                value="donor"
-                checked={role === 'donor'}
-                onChange={(e) => setRole(normalizeAppRole(e.target.value))}
-                className="sr-only"
-              />
+            <button
+              type="button"
+              onClick={() => setRole('donor')}
+              aria-pressed={role === 'donor'}
+              className={`rounded-[20px] border px-4 py-3 text-left transition ${
+                role === 'donor'
+                  ? 'border-brand-teal bg-brand-teal/10 shadow-[0_10px_24px_rgba(59,112,128,0.12)]'
+                  : 'border-brand-forest/15 bg-brand-cream/20 hover:border-brand-teal/50 hover:bg-brand-cream/35'
+              }`}
+            >
               <span className="block font-ui text-sm font-black uppercase tracking-wide text-brand-teal">
                 Donor
               </span>
               <span className="mt-1 block font-body text-sm text-text-primary/70">
                 Browse requests, save items, and submit donations.
               </span>
-            </label>
-            <label className="rounded-[20px] border border-brand-forest/15 bg-brand-cream/20 px-4 py-3 text-left">
-              <input
-                type="radio"
-                name="role"
-                value="organization"
-                checked={role === 'organization'}
-                onChange={(e) => setRole(normalizeAppRole(e.target.value))}
-                className="sr-only"
-              />
+            </button>
+            <button
+              type="button"
+              onClick={() => setRole('organization')}
+              aria-pressed={role === 'organization'}
+              className={`rounded-[20px] border px-4 py-3 text-left transition ${
+                role === 'organization'
+                  ? 'border-brand-teal bg-brand-teal/10 shadow-[0_10px_24px_rgba(59,112,128,0.12)]'
+                  : 'border-brand-forest/15 bg-brand-cream/20 hover:border-brand-teal/50 hover:bg-brand-cream/35'
+              }`}
+            >
               <span className="block font-ui text-sm font-black uppercase tracking-wide text-brand-teal">
                 Organization
               </span>
               <span className="mt-1 block font-body text-sm text-text-primary/70">
                 Manage wishlist items, incoming donations, and your public profile.
               </span>
-            </label>
+            </button>
           </div>
         </div>
 
@@ -96,6 +99,7 @@ export function SignupForm() {
             id="email"
             type="email"
             required
+            disabled={loading}
             autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -111,6 +115,7 @@ export function SignupForm() {
             id="password"
             type="password"
             required
+            disabled={loading}
             autoComplete="new-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -125,9 +130,16 @@ export function SignupForm() {
         <button
           type="submit"
           disabled={loading}
-          className="rounded-full bg-brand-forest px-5 py-3 font-ui text-sm font-bold text-brand-cream disabled:opacity-60"
+          className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-forest px-5 py-3 font-ui text-sm font-bold text-brand-cream disabled:cursor-wait disabled:opacity-60"
         >
-          {loading ? 'Creating account...' : 'Create account'}
+          {loading ? (
+            <>
+              <LoadingSpinner className="text-brand-cream" label="Creating account" />
+              <span>Creating account...</span>
+            </>
+          ) : (
+            'Create account'
+          )}
         </button>
       </form>
 
