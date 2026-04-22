@@ -4,11 +4,13 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { normalizeAppRole, type AppRole } from '@/lib/types/app-role'
 
 export function SignupForm() {
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [role, setRole] = useState<AppRole>('donor')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -18,7 +20,15 @@ export function SignupForm() {
     setLoading(true)
 
     const supabase = createClient()
-    const { error: authError } = await supabase.auth.signUp({ email, password })
+    const { error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          requested_role: normalizeAppRole(role),
+        },
+      },
+    })
 
     if (authError) {
       setError(authError.message)
@@ -38,6 +48,46 @@ export function SignupForm() {
       </p>
 
       <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <span className="font-ui text-sm font-bold text-brand-teal">
+            I am signing up as
+          </span>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="rounded-[20px] border border-brand-forest/15 bg-brand-cream/20 px-4 py-3 text-left">
+              <input
+                type="radio"
+                name="role"
+                value="donor"
+                checked={role === 'donor'}
+                onChange={(e) => setRole(normalizeAppRole(e.target.value))}
+                className="sr-only"
+              />
+              <span className="block font-ui text-sm font-black uppercase tracking-wide text-brand-teal">
+                Donor
+              </span>
+              <span className="mt-1 block font-body text-sm text-text-primary/70">
+                Browse requests, save items, and submit donations.
+              </span>
+            </label>
+            <label className="rounded-[20px] border border-brand-forest/15 bg-brand-cream/20 px-4 py-3 text-left">
+              <input
+                type="radio"
+                name="role"
+                value="organization"
+                checked={role === 'organization'}
+                onChange={(e) => setRole(normalizeAppRole(e.target.value))}
+                className="sr-only"
+              />
+              <span className="block font-ui text-sm font-black uppercase tracking-wide text-brand-teal">
+                Organization
+              </span>
+              <span className="mt-1 block font-body text-sm text-text-primary/70">
+                Manage wishlist items, incoming donations, and your public profile.
+              </span>
+            </label>
+          </div>
+        </div>
+
         <div className="flex flex-col gap-1">
           <label htmlFor="email" className="font-ui text-sm font-bold text-brand-teal">
             Email

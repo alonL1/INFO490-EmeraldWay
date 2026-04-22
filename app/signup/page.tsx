@@ -1,10 +1,13 @@
-import { PageShell } from "@/components/layout/page-shell"
-import { SignupForm } from "@/components/auth/signup-form"
+import { SignupForm } from "@/components/auth/signup-form";
+import { PageShell } from "@/components/layout/page-shell";
+import { getViewerContext } from "@/lib/server/viewer";
 
-export default function SignupPage() {
+export default async function SignupPage() {
+  const viewer = await getViewerContext();
+
   return (
-    <PageShell activeKey="profile" variant="nonprofit">
+    <PageShell role={viewer.role}>
       <SignupForm />
     </PageShell>
-  )
+  );
 }

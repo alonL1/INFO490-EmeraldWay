@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { StatusPill } from "@/components/shared/status-pill";
 import type { ItemSummary } from "@/lib/types/item";
 
 type ItemCardProps = {
@@ -34,6 +35,11 @@ export function ItemCard({ item }: ItemCardProps) {
           <p className="item-card__meta">
             {item.organization}
           </p>
+          <p className="item-card__submeta">{item.location}</p>
+          <div className="item-card__tags">
+            <StatusPill kind="priority" label={item.priority} />
+            <StatusPill kind="status" label={item.status} />
+          </div>
         </div>
       </Link>
     </article>

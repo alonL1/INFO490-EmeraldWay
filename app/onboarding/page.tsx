@@ -1,25 +1,45 @@
-import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
-import { PageShell } from '@/components/layout/page-shell'
-import { OnboardingForm } from '@/components/auth/onboarding-form'
+import { redirect } from "next/navigation";
+import { PageShell } from "@/components/layout/page-shell";
+import {
+  DonorOnboardingForm,
+  OrganizationOnboardingForm,
+} from "@/components/auth/onboarding-form";
+import { requireViewer } from "@/lib/server/viewer";
 
 export default async function OnboardingPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const viewer = await requireViewer();
 
-  if (!user) redirect('/login')
+  if (viewer.role === "organization") {
+    const { data: profile } = await viewer.supabase
+      .from("profiles")
+      .select("id")
+      .eq("id", viewer.user.id)
+      .maybeSingle();
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('id')
-    .eq('id', user.id)
-    .single()
+    if (profile) {
+      redirect("/profile");
+    }
 
-  if (profile) redirect('/profile')
+    return (
+      <PageShell role={viewer.role}>
+        <OrganizationOnboardingForm />
+      </PageShell>
+    );
+  }
+
+  const { data: donorProfile } = await viewer.supabase
+    .from("donor_profiles")
+    .select("id")
+    .eq("id", viewer.user.id)
+    .maybeSingle();
+
+  if (donorProfile) {
+    redirect("/profile");
+  }
 
   return (
-    <PageShell activeKey="profile" variant="nonprofit">
-      <OnboardingForm />
+    <PageShell role={viewer.role}>
+      <DonorOnboardingForm />
     </PageShell>
-  )
+  );
 }

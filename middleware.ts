@@ -22,10 +22,22 @@ export async function middleware(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   const { pathname } = request.nextUrl
 
-  const protectedRoutes = ['/profile', '/wishlist', '/onboarding']
+  const protectedRoutes = [
+    '/donations',
+    '/incoming-donations',
+    '/messages',
+    '/onboarding',
+    '/profile',
+    '/saved-items',
+    '/wishlist',
+  ]
   const authRoutes = ['/login', '/signup']
+  const donationFormRoute = /^\/listings\/[^/]+\/donate(?:\/)?$/
 
-  if (protectedRoutes.some(r => pathname.startsWith(r)) && !user) {
+  if (
+    !user &&
+    (protectedRoutes.some(r => pathname.startsWith(r)) || donationFormRoute.test(pathname))
+  ) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
   if (authRoutes.some(r => pathname.startsWith(r)) && user) {
