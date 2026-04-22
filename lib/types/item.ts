@@ -4,7 +4,6 @@ export type ItemSummary = {
   organization: string;
   imageSrc: string | null;
   imageAlt: string;
-  isDemo?: boolean;
 };
 
 export type ItemRecord = ItemSummary & {

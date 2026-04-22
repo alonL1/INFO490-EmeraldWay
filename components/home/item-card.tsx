@@ -28,11 +28,6 @@ export function ItemCard({ item }: ItemCardProps) {
           )}
         </div>
         <div className="item-card__content">
-          {item.isDemo ? (
-            <p className="font-ui text-[0.65rem] font-black uppercase tracking-[0.24em] text-brand-teal/75">
-              Demo Item
-            </p>
-          ) : null}
           <h3 className="item-card__title">
             {item.title}
           </h3>
