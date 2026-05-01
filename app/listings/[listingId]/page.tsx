@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageShell } from "@/components/layout/page-shell";
+import { ListingDetailView } from "@/components/listings/listing-detail-view";
 import { StatusPill } from "@/components/shared/status-pill";
 import { toggleSavedListing } from "@/app/donations/actions";
 import { getViewerContext } from "@/lib/server/viewer";
@@ -104,113 +104,96 @@ export default async function ListingPage({ params }: ListingPageProps) {
           </div>
         </div>
 
-        <div className="detail-shell__grid">
-          <section className="detail-shell__media-card">
-            <div className="detail-shell__media">
-              {item.imageSrc ? (
-                <Image
-                  src={item.imageSrc}
-                  alt={item.imageAlt}
-                  fill
-                  className="object-cover"
-                  sizes="(min-width: 1024px) 48vw, 100vw"
-                  priority
-                />
-              ) : (
-                <div className="absolute inset-0 bg-brand-cream/35" />
-              )}
-            </div>
-            <div className="detail-shell__copy">
-              <p>{item.description || "No description has been added to this request yet."}</p>
-            </div>
-          </section>
-
-          <aside className="detail-panel">
-            <div>
-              <p className="section-eyebrow">
-                {isOwnerOrganization ? "Request Management" : "Complete To Donate"}
-              </p>
-              <h2 className="section-heading">
-                {isOwnerOrganization
-                  ? "Keep this request visible and coordinated."
-                  : "Confirm timing before you drop off."}
-              </h2>
-              <p className="section-copy">
-                {isOwnerOrganization
-                  ? "Use the wishlist and incoming donations pages to update this request as donor coordination progresses."
-                  : "Submit a donation form so the organization can review your offer and send the next handoff details."}
-              </p>
-            </div>
-
-            <div className="detail-panel__actions">
-              {isOwnerOrganization ? (
-                <>
-                  <Link
-                    href={`/wishlist/${item.id}/edit`}
-                    className="rounded-full bg-brand-forest px-5 py-3 font-ui text-sm font-bold text-brand-cream"
-                  >
-                    Edit Item
-                  </Link>
-                  <Link
-                    href="/incoming-donations"
-                    className="rounded-full border border-border-accent px-5 py-3 font-ui text-sm font-bold text-brand-teal"
-                  >
-                    Open Incoming Donations
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link
-                    href={
-                      viewer.isAuthenticated && isDonorViewer
-                        ? `/listings/${item.id}/donate`
-                        : "/login"
-                    }
-                    className="rounded-full bg-brand-forest px-5 py-3 font-ui text-sm font-bold text-brand-cream"
-                  >
-                    {viewer.isAuthenticated && isDonorViewer
-                      ? "Go to form"
-                      : "Sign in to donate"}
-                  </Link>
-                  <Link
-                    href={viewer.isAuthenticated ? "/messages" : "/login"}
-                    className="rounded-full border border-border-accent px-5 py-3 font-ui text-sm font-bold text-brand-teal"
-                  >
-                    {viewer.isAuthenticated ? "Message organization" : "Sign in to message"}
-                  </Link>
-                </>
-              )}
-            </div>
-
-            <dl className="detail-meta-grid">
+        <ListingDetailView
+          item={item}
+          rightPanel={
+            <>
               <div>
-                <dt>Item Type</dt>
-                <dd>{item.itemType}</dd>
-              </div>
-              <div>
-                <dt>Condition</dt>
-                <dd>{item.condition}</dd>
-              </div>
-              <div>
-                <dt>Location</dt>
-                <dd>{item.location}</dd>
-              </div>
-              <div>
-                <dt>Next Step</dt>
-                <dd>
+                <p className="section-eyebrow">
+                  {isOwnerOrganization ? "Request Management" : "Complete To Donate"}
+                </p>
+                <h2 className="section-heading">
                   {isOwnerOrganization
-                    ? "Review incoming submissions and keep status current."
-                    : "Complete the donation form and wait for organization follow-up."}
-                </dd>
+                    ? "Keep this request visible and coordinated."
+                    : "Confirm timing before you drop off."}
+                </h2>
+                <p className="section-copy">
+                  {isOwnerOrganization
+                    ? "Use the wishlist and incoming donations pages to update this request as donor coordination progresses."
+                    : "Submit a donation form so the organization can review your offer and send the next handoff details."}
+                </p>
               </div>
-            </dl>
 
-            <div className="detail-chip-row">
-              <StatusPill kind="priority" label={item.priority} />
-              <StatusPill kind="status" label={item.status} />
-            </div>
-          </aside>
-        </div>
+              <div className="detail-panel__actions">
+                {isOwnerOrganization ? (
+                  <>
+                    <Link
+                      href={`/wishlist/${item.id}/edit`}
+                      className="rounded-full bg-brand-forest px-5 py-3 font-ui text-sm font-bold text-brand-cream"
+                    >
+                      Edit Item
+                    </Link>
+                    <Link
+                      href="/incoming-donations"
+                      className="rounded-full border border-border-accent px-5 py-3 font-ui text-sm font-bold text-brand-teal"
+                    >
+                      Open Incoming Donations
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href={
+                        viewer.isAuthenticated && isDonorViewer
+                          ? `/listings/${item.id}/donate`
+                          : "/login"
+                      }
+                      className="rounded-full bg-brand-forest px-5 py-3 font-ui text-sm font-bold text-brand-cream"
+                    >
+                      {viewer.isAuthenticated && isDonorViewer
+                        ? "Go to form"
+                        : "Sign in to donate"}
+                    </Link>
+                    <Link
+                      href={viewer.isAuthenticated ? "/messages" : "/login"}
+                      className="rounded-full border border-border-accent px-5 py-3 font-ui text-sm font-bold text-brand-teal"
+                    >
+                      {viewer.isAuthenticated ? "Message organization" : "Sign in to message"}
+                    </Link>
+                  </>
+                )}
+              </div>
+
+              <dl className="detail-meta-grid">
+                <div>
+                  <dt>Item Type</dt>
+                  <dd>{item.itemType}</dd>
+                </div>
+                <div>
+                  <dt>Condition</dt>
+                  <dd>{item.condition}</dd>
+                </div>
+                <div>
+                  <dt>Location</dt>
+                  <dd>{item.location}</dd>
+                </div>
+                <div>
+                  <dt>Next Step</dt>
+                  <dd>
+                    {isOwnerOrganization
+                      ? "Review incoming submissions and keep status current."
+                      : "Complete the donation form and wait for organization follow-up."}
+                  </dd>
+                </div>
+              </dl>
+
+              <div className="detail-chip-row">
+                <StatusPill kind="priority" label={item.priority} />
+                <StatusPill kind="status" label={item.status} />
+              </div>
+            </>
+          }
+        />
       </section>
     </PageShell>
   );

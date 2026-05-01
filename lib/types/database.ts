@@ -48,12 +48,7 @@ export type SavedListing = {
   created_at: string;
 };
 
-export type DonationStatus =
-  | "submitted"
-  | "reviewing"
-  | "scheduled"
-  | "received"
-  | "declined";
+export type DonationStatus = "submitted" | "accepted" | "declined";
 
 export type DonationRecord = {
   id: string;

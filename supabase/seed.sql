@@ -1,15 +1,13 @@
--- Seed demo data for the donor + organization MVP.
--- This file assumes the schema in supabase/migrations/20260422_role_cleanup.sql
--- has already been run and that the following auth users already exist:
+-- Seed application data for the existing auth users below.
+-- This file assumes supabase/migrations/20260422_role_cleanup.sql
+-- has already been run.
 --
---   shelter.one@commcompass.demo
---   outreach.collective@commcompass.demo
---   taylor.donor@commcompass.demo
---   jordan.helper@commcompass.demo
+-- Required existing auth users:
+--   alonlevy04@gmail.com  -> donor
+--   alevy4@uw.edu         -> organization
 --
--- Recommended setup:
--- 1. Create those users in Supabase Auth or through the app signup flow.
--- 2. Run this seed file in SQL Editor.
+-- Do not run seed_auth_users.sql for this flow.
+-- That helper is only for creating separate demo auth accounts directly in auth.users.
 
 do $$
 declare
@@ -19,10 +17,8 @@ begin
   into missing_emails
   from (
     values
-      ('shelter.one@commcompass.demo'::text),
-      ('outreach.collective@commcompass.demo'::text),
-      ('taylor.donor@commcompass.demo'::text),
-      ('jordan.helper@commcompass.demo'::text)
+      ('alonlevy04@gmail.com'::text),
+      ('alevy4@uw.edu'::text)
   ) as seed(email)
   where not exists (
     select 1
@@ -32,7 +28,7 @@ begin
 
   if missing_emails is not null then
     raise exception
-      'Missing required auth users. Create these users first in Supabase Auth, then rerun seed.sql: %',
+      'Missing required auth users. Create these users in Supabase Auth first, then rerun seed.sql: %',
       missing_emails;
   end if;
 end
@@ -44,10 +40,8 @@ select
   seed.role
 from (
   values
-    ('shelter.one@commcompass.demo'::text, 'organization'::text),
-    ('outreach.collective@commcompass.demo'::text, 'organization'::text),
-    ('taylor.donor@commcompass.demo'::text, 'donor'::text),
-    ('jordan.helper@commcompass.demo'::text, 'donor'::text)
+    ('alonlevy04@gmail.com'::text, 'donor'::text),
+    ('alevy4@uw.edu'::text, 'organization'::text)
 ) as seed(email, role)
 join auth.users as user_row
   on user_row.email = seed.email
@@ -70,18 +64,11 @@ select
 from (
   values
     (
-      'shelter.one@commcompass.demo'::text,
-      'Community Compass Shelter Network'::text,
-      'Emergency shelter and direct-service team coordinating urgent requests for unhoused neighbors across Seattle.'::text,
+      'alevy4@uw.edu'::text,
+      'Community Compass UW'::text,
+      'University-connected organization coordinating item drives, direct support requests, and local donation intake.'::text,
       'Seattle, WA'::text,
-      'shelter.one@commcompass.demo'::text
-    ),
-    (
-      'outreach.collective@commcompass.demo'::text,
-      'North Sound Outreach Collective'::text,
-      'Regional outreach group providing rapid-response item support, family supplies, and housing move-in essentials.'::text,
-      'Everett, WA'::text,
-      'outreach.collective@commcompass.demo'::text
+      'alevy4@uw.edu'::text
     )
 ) as seed(email, org_name, description, location, contact_email)
 join auth.users as user_row
@@ -111,20 +98,12 @@ select
 from (
   values
     (
-      'taylor.donor@commcompass.demo'::text,
-      'Taylor Donor'::text,
-      'Supports emergency item drives and recurring donation drop-offs on weeknights.'::text,
+      'alonlevy04@gmail.com'::text,
+      'Alon Levy'::text,
+      'Supports campus-adjacent donation drives and can help with recurring item drop-offs.'::text,
       'Seattle, WA'::text,
-      'taylor.donor@commcompass.demo'::text,
-      'Winter gear and hygiene kits'::text
-    ),
-    (
-      'jordan.helper@commcompass.demo'::text,
-      'Jordan Helper'::text,
-      'Focuses on pantry goods, starter-home supplies, and family resource requests.'::text,
-      'Shoreline, WA'::text,
-      'jordan.helper@commcompass.demo'::text,
-      'Food support and household basics'::text
+      'alonlevy04@gmail.com'::text,
+      'Household essentials and clothing'::text
     )
 ) as seed(email, full_name, bio, location, contact_email, focus_area)
 join auth.users as user_row
@@ -161,7 +140,7 @@ select
 from (
   values
     (
-      'shelter.one@commcompass.demo'::text,
+      'alevy4@uw.edu'::text,
       'Sleeping Bags'::text,
       'Need durable sleeping bags for overnight cold-weather response.'::text,
       'Cold Weather Gear'::text,
@@ -172,9 +151,9 @@ from (
       '/items/sleeping-bags.png'::text
     ),
     (
-      'shelter.one@commcompass.demo'::text,
+      'alevy4@uw.edu'::text,
       'Women''s Socks'::text,
-      'Clean socks are one of the most requested basic-needs items at our day center.'::text,
+      'Clean socks are one of the most requested basic-needs items in our resource center.'::text,
       'Clothing'::text,
       'New'::text,
       'Seattle, WA'::text,
@@ -183,7 +162,7 @@ from (
       '/items/womens-socks.png'::text
     ),
     (
-      'shelter.one@commcompass.demo'::text,
+      'alevy4@uw.edu'::text,
       'Rice Cooker'::text,
       'Seeking a working rice cooker for a newly housed family.'::text,
       'Kitchen Appliance'::text,
@@ -194,34 +173,34 @@ from (
       '/items/rice-cooker.png'::text
     ),
     (
-      'outreach.collective@commcompass.demo'::text,
+      'alevy4@uw.edu'::text,
       'Children''s Jackets'::text,
       'Stocking a family resource closet with youth winter jackets.'::text,
       'Clothing'::text,
       'New or gently used'::text,
-      'Everett, WA'::text,
+      'Seattle, WA'::text,
       'High'::text,
       'Open'::text,
       '/items/childrens-jackets.png'::text
     ),
     (
-      'outreach.collective@commcompass.demo'::text,
+      'alevy4@uw.edu'::text,
       'Canned Soups'::text,
-      'Shelf-stable soups for emergency meal kits and senior deliveries.'::text,
+      'Shelf-stable soups for emergency meal kits and community deliveries.'::text,
       'Food'::text,
       'Unopened'::text,
-      'Tacoma, WA'::text,
+      'Seattle, WA'::text,
       'Medium'::text,
       'Open'::text,
       '/items/canned-soups.png'::text
     ),
     (
-      'outreach.collective@commcompass.demo'::text,
+      'alevy4@uw.edu'::text,
       'Blankets'::text,
       'Need blankets ahead of the next weather shift for evening outreach.'::text,
       'Bedding'::text,
       'New or freshly laundered'::text,
-      'Kent, WA'::text,
+      'Seattle, WA'::text,
       'Critical'::text,
       'Open'::text,
       '/items/blankets.png'::text
@@ -254,10 +233,9 @@ select
   listing.id
 from (
   values
-    ('taylor.donor@commcompass.demo'::text, 'Sleeping Bags'::text),
-    ('taylor.donor@commcompass.demo'::text, 'Children''s Jackets'::text),
-    ('jordan.helper@commcompass.demo'::text, 'Women''s Socks'::text),
-    ('jordan.helper@commcompass.demo'::text, 'Blankets'::text)
+    ('alonlevy04@gmail.com'::text, 'Sleeping Bags'::text),
+    ('alonlevy04@gmail.com'::text, 'Women''s Socks'::text),
+    ('alonlevy04@gmail.com'::text, 'Blankets'::text)
 ) as seed(donor_email, listing_title)
 join auth.users as donor_user
   on donor_user.email = seed.donor_email
@@ -294,51 +272,51 @@ from (
   values
     (
       'Sleeping Bags'::text,
-      'taylor.donor@commcompass.demo'::text,
-      'Taylor Donor'::text,
-      'taylor.donor@commcompass.demo'::text,
-      'I can drop off three sleeping bags after work this Thursday.'::text,
+      'alonlevy04@gmail.com'::text,
+      'Alon Levy'::text,
+      'alonlevy04@gmail.com'::text,
+      'I can drop off two sleeping bags this week after 5 PM.'::text,
       'Thursday 5:30 PM - 7:00 PM'::text,
-      'CC-1001'::text,
-      'scheduled'::text,
+      'CC-ALON-1001'::text,
+      'accepted'::text,
       now() + interval '2 days',
-      'Front desk will be ready for intake.'::text
+      'Front desk will be ready for intake.'
     ),
     (
       'Women''s Socks'::text,
-      'jordan.helper@commcompass.demo'::text,
-      'Jordan Helper'::text,
-      'jordan.helper@commcompass.demo'::text,
-      'I have two unopened packs ready to bring over.'::text,
-      'Friday lunch hour'::text,
-      'CC-1002'::text,
-      'reviewing'::text,
+      'alonlevy04@gmail.com'::text,
+      'Alon Levy'::text,
+      'alonlevy04@gmail.com'::text,
+      'I have several unopened packs ready to bring over.'::text,
+      'Friday afternoon'::text,
+      'CC-ALON-1002'::text,
+      'submitted'::text,
       null::timestamp with time zone,
-      'We are confirming the next intake window now.'::text
+      'We are confirming the next intake window now.'
     ),
     (
       'Rice Cooker'::text,
-      'taylor.donor@commcompass.demo'::text,
-      'Taylor Donor'::text,
-      'taylor.donor@commcompass.demo'::text,
-      'I found a working cooker and can bring it once approved.'::text,
+      'alonlevy04@gmail.com'::text,
+      'Alon Levy'::text,
+      'alonlevy04@gmail.com'::text,
+      'I found a working rice cooker and can bring it once approved.'::text,
       'Saturday morning'::text,
-      'CC-1003'::text,
+      'CC-ALON-1003'::text,
       'submitted'::text,
       null::timestamp with time zone,
       null::text
     ),
     (
-      'Children''s Jackets'::text,
-      'jordan.helper@commcompass.demo'::text,
-      'Jordan Helper'::text,
-      'jordan.helper@commcompass.demo'::text,
-      'I can donate four youth jackets in assorted sizes.'::text,
+      'Blankets'::text,
+      'alonlevy04@gmail.com'::text,
+      'Alon Levy'::text,
+      'alonlevy04@gmail.com'::text,
+      'I can donate three blankets and drop them off Monday evening.'::text,
       'Monday evening'::text,
-      'CC-1004'::text,
-      'received'::text,
+      'CC-ALON-1004'::text,
+      'accepted'::text,
       now() - interval '1 day',
-      'Items received and distributed. Thank you.'::text
+      'Items received. Thank you.'
     )
 ) as seed(
   listing_title,

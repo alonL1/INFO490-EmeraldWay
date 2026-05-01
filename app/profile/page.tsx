@@ -37,7 +37,7 @@ export default async function ProfilePage() {
         .from("donations")
         .select("*", { count: "exact", head: true })
         .eq("organization_id", viewer.user.id)
-        .in("status", ["submitted", "reviewing", "scheduled"]),
+        .in("status", ["submitted", "accepted"]),
       viewer.supabase
         .from("listings")
         .select("id, title, location, priority, status")
@@ -180,7 +180,7 @@ export default async function ProfilePage() {
       .from("donations")
       .select("*", { count: "exact", head: true })
       .eq("donor_id", viewer.user.id)
-      .in("status", ["submitted", "reviewing", "scheduled"]),
+      .in("status", ["submitted", "accepted"]),
     viewer.supabase
       .from("saved_listings")
       .select(

@@ -68,20 +68,18 @@ export async function createDonation(formData: FormData) {
   redirect(`/donations/${donation.id}?submitted=1`);
 }
 
-export async function updateDonationStatus(formData: FormData) {
+async function setDonationDecision(
+  formData: FormData,
+  status: "accepted" | "declined",
+) {
   const viewer = await requireRole("organization");
   const donationId = formData.get("donationId") as string;
   const redirectTo =
-    (formData.get("redirectTo") as string) || `/incoming-donations/${donationId}`;
-  const nextStatus = formData.get("status") as string;
+    (formData.get("redirectTo") as string) || "/incoming-donations";
 
   const { error } = await viewer.supabase
     .from("donations")
-    .update({
-      organization_response: (formData.get("organization_response") as string) || null,
-      scheduled_for: (formData.get("scheduled_for") as string) || null,
-      status: nextStatus,
-    })
+    .update({ status })
     .eq("id", donationId)
     .eq("organization_id", viewer.user.id);
 
@@ -89,11 +87,18 @@ export async function updateDonationStatus(formData: FormData) {
     throw error;
   }
 
-  revalidatePath("/profile");
   revalidatePath("/incoming-donations");
   revalidatePath(`/incoming-donations/${donationId}`);
-  revalidatePath("/donations");
+  revalidatePath("/profile");
   redirect(redirectTo);
+}
+
+export async function acceptDonation(formData: FormData) {
+  await setDonationDecision(formData, "accepted");
+}
+
+export async function declineDonation(formData: FormData) {
+  await setDonationDecision(formData, "declined");
 }
 
 export async function toggleSavedListing(formData: FormData) {

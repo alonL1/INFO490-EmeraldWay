@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { PageShell } from "@/components/layout/page-shell";
 import { StatusPill } from "@/components/shared/status-pill";
-import { DonationStatusForm } from "@/components/donations/donation-status-form";
+import { DonationDecisionButtons } from "@/components/donations/donation-decision-buttons";
 import { requireRole } from "@/lib/server/viewer";
 
 function formatDateLabel(value: string) {
@@ -17,7 +17,7 @@ export default async function IncomingDonationsPage() {
   const { data: donations } = await viewer.supabase
     .from("donations")
     .select(
-      "id, donor_display_name, status, confirmation_code, preferred_dropoff_window, scheduled_for, organization_response, created_at, listings(title, location)",
+      "id, donor_display_name, status, confirmation_code, created_at, listings(title)",
     )
     .eq("organization_id", viewer.user.id)
     .order("created_at", { ascending: false });
@@ -30,7 +30,7 @@ export default async function IncomingDonationsPage() {
             <p className="section-eyebrow">Organization Workspace</p>
             <h1 className="section-heading">Incoming Donations</h1>
             <p className="section-copy">
-              Review donor submissions, update statuses inline, or open a full donation detail page for more context.
+              Accept or decline incoming donations. Click a row to see the full item and donor details.
             </p>
           </div>
           <Link
@@ -45,19 +45,18 @@ export default async function IncomingDonationsPage() {
           <div className="wishlist-list">
             {donations.map((donation) => {
               const listing =
-                (
-                  donation.listings as unknown as
-                    | {
-                        location?: string | null;
-                        title?: string | null;
-                      }
-                    | null
-                ) ?? null;
+                (donation.listings as unknown as { title?: string | null } | null) ?? null;
+              const title = listing?.title ?? "Donation Request";
 
               return (
-                <article key={donation.id} className="wishlist-row">
-                  <Link href={`/incoming-donations/${donation.id}`} className="wishlist-row__content md:col-span-2">
-                    <h2>{listing?.title ?? "Donation Request"}</h2>
+                <article key={donation.id} className="wishlist-row relative">
+                  <Link
+                    aria-label={`Open donation from ${donation.donor_display_name}`}
+                    className="absolute inset-0 rounded-[24px]"
+                    href={`/incoming-donations/${donation.id}`}
+                  />
+                  <div className="wishlist-row__content md:col-span-2">
+                    <h2>{title}</h2>
                     <p>
                       {donation.donor_display_name}
                       {" · "}
@@ -65,30 +64,19 @@ export default async function IncomingDonationsPage() {
                       {" · "}
                       {formatDateLabel(donation.created_at)}
                     </p>
-                    <div className="detail-chip-row">
-                      <StatusPill kind="status" label={donation.status} />
-                    </div>
-                    <p className="mt-3 font-body text-sm text-text-primary/70">
-                      Preferred drop-off:
-                      {" "}
-                      {donation.preferred_dropoff_window ?? "Not provided"}
-                    </p>
-                  </Link>
+                  </div>
 
-                  <div className="wishlist-row__actions">
-                    <DonationStatusForm
-                      compact
-                      defaultResponse={donation.organization_response}
-                      defaultScheduledFor={donation.scheduled_for}
+                  <div className="wishlist-row__actions relative z-10">
+                    <DonationDecisionButtons
                       donationId={donation.id}
                       redirectTo="/incoming-donations"
                       status={donation.status}
                     />
                     <Link
                       href={`/incoming-donations/${donation.id}`}
-                      className="rounded-full border border-border-accent px-5 py-3 text-center font-ui text-sm font-bold text-brand-teal"
+                      className="text-center font-ui text-xs font-bold uppercase tracking-wide text-brand-teal/70 hover:text-brand-teal"
                     >
-                      Open Detail
+                      See more details →
                     </Link>
                   </div>
                 </article>

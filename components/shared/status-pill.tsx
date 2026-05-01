@@ -16,6 +16,9 @@ function toneFor(kind: "priority" | "status", label: string) {
     if (normalized.includes("low")) return "low";
   }
 
+  if (normalized.includes("accepted")) return "received";
+  if (normalized.includes("declined")) return "attention";
+  if (normalized.includes("submitted")) return "pending";
   if (normalized.includes("received")) return "received";
   if (normalized.includes("open")) return "open";
   if (normalized.includes("pending")) return "pending";
