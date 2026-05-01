@@ -14,6 +14,7 @@ export function SignupForm() {
   const [role, setRole] = useState<AppRole>('donor')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [confirmationEmail, setConfirmationEmail] = useState('')
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -21,7 +22,7 @@ export function SignupForm() {
     setLoading(true)
 
     const supabase = createClient()
-    const { error: authError } = await supabase.auth.signUp({
+    const { data, error: authError } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -37,8 +38,36 @@ export function SignupForm() {
       return
     }
 
+    if (!data.session) {
+      setConfirmationEmail(email)
+      setLoading(false)
+      return
+    }
+
     router.refresh()
     router.push('/onboarding')
+  }
+
+  if (confirmationEmail) {
+    return (
+      <div className="max-w-md mx-auto mt-12 rounded-[28px] border border-brand-forest/10 bg-white p-8 shadow-panel text-center">
+        <h1 className="font-ui text-2xl font-black text-brand-teal">Check your email</h1>
+        <p className="mt-3 font-body text-sm text-text-primary/75">
+          We sent a confirmation link to{' '}
+          <span className="font-bold text-brand-teal">{confirmationEmail}</span>. Click the link in
+          that email to verify your account before signing in.
+        </p>
+        <p className="mt-3 font-body text-sm text-text-primary/65">
+          Don&apos;t see it? Check your spam folder.
+        </p>
+        <Link
+          href="/login"
+          className="mt-6 inline-flex items-center justify-center rounded-full bg-brand-forest px-5 py-3 font-ui text-sm font-bold text-brand-cream"
+        >
+          Go to sign in
+        </Link>
+      </div>
+    )
   }
 
   return (
