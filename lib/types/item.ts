@@ -8,11 +8,11 @@ export type ItemSummary = {
   location: string;
   priority: string;
   status: string;
+  itemType: string;
 };
 
 export type ItemRecord = ItemSummary & {
   condition: string;
   description: string;
-  itemType: string;
 };
 

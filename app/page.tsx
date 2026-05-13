@@ -1,6 +1,5 @@
 import { headers } from "next/headers";
-import { FilterSidebar } from "@/components/home/filter-sidebar";
-import { ItemGrid } from "@/components/home/item-grid";
+import { FilterableListings } from "@/components/home/filterable-listings";
 import { PageShell } from "@/components/layout/page-shell";
 import { getViewerContext } from "@/lib/server/viewer";
 import type { ItemSummary } from "@/lib/types/item";
@@ -14,7 +13,7 @@ export default async function HomePage() {
   const viewer = await getViewerContext();
   const { data } = await viewer.supabase
       .from("listings")
-      .select("id, profile_id, title, image_url, location, priority, status, profiles(org_name)")
+      .select("id, profile_id, title, image_url, location, priority, status, item_type, profiles(org_name)")
       .order("created_at", { ascending: false });
 
   const items: ItemSummary[] = (data ?? [])
@@ -29,6 +28,7 @@ export default async function HomePage() {
       location: listing.location ?? "Seattle, WA",
       priority: listing.priority ?? "Medium",
       status: listing.status ?? "Pending",
+      itemType: listing.item_type ?? "General",
     }));
 
   return (
@@ -75,10 +75,7 @@ export default async function HomePage() {
           </div>
         </div>
 
-        <section className="home-layout">
-        <FilterSidebar />
-        <ItemGrid items={items} />
-        </section>
+        <FilterableListings items={items} />
       </section>
     </PageShell>
   );
