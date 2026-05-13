@@ -6,11 +6,11 @@ import { getViewerContext } from "@/lib/server/viewer";
 import type { ItemSummary } from "@/lib/types/item";
 
 const COMMUNITY_COMPASS_URL = "https://comm-compass.vercel.app";
-const CAPSTONE_HOST = "info-490-emerald-way.vercel.app";
+const COMMUNITY_COMPASS_HOST = "comm-compass.vercel.app";
 
 export default async function HomePage() {
   const host = (await headers()).get("host") ?? "";
-  const isCapstoneSite = host === CAPSTONE_HOST;
+  const isCapstoneSite = host !== COMMUNITY_COMPASS_HOST;
   const viewer = await getViewerContext();
   const { data } = await viewer.supabase
       .from("listings")
