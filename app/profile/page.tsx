@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { AuthButton } from "@/components/auth/auth-button";
 import { PageShell } from "@/components/layout/page-shell";
 import { ProfileSections } from "@/components/profile/profile-sections";
 import { requireViewer } from "@/lib/server/viewer";
@@ -86,6 +87,7 @@ export default async function ProfilePage() {
               >
                 Wishlist
               </Link>
+              <AuthButton appearance="light" />
             </div>
           </div>
 
@@ -234,6 +236,7 @@ export default async function ProfilePage() {
             >
               Saved Items
             </Link>
+            <AuthButton appearance="light" />
           </div>
         </div>
 

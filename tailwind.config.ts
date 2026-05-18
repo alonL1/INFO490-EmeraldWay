@@ -33,13 +33,14 @@ const config: Config = {
         body: ["var(--font-body)", "Inter", "sans-serif"],
       },
       spacing: {
-        "layout-max": "1200px",
+        "layout-max": "1600px",
         "nav-h": "96px",
         "filter-w": "280px",
         "filter-h": "56px",
         card: "21rem",
         "page-top": "0px",
-        "page-gutter": "24px",
+        "page-gutter": "32px",
+        "page-gutter-xl": "48px",
       },
       boxShadow: {
         panel: "0 18px 40px rgba(65, 93, 67, 0.08)",

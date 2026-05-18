@@ -11,7 +11,7 @@ export function Wordmark({ className }: WordmarkProps) {
       href="/"
       aria-label="Community Compass home"
       className={cn(
-        "font-display text-[clamp(1.75rem,3.8vw,3.3rem)] italic leading-none tracking-[-0.03em] text-brand-cream",
+        "min-w-0 truncate font-display text-[clamp(1.4rem,3.6vw,3rem)] italic leading-none tracking-[-0.03em] text-brand-cream",
         className,
       )}
     >

@@ -6,11 +6,29 @@ import type { User } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/client'
 import { LoadingSpinner } from '@/components/shared/loading-spinner'
 
-export function AuthButton() {
+type AuthButtonProps = {
+  appearance?: 'dark' | 'light'
+}
+
+const APPEARANCE_CLASSES = {
+  dark: {
+    base: 'border-white/20 text-brand-cream hover:bg-white/10',
+    spinner: 'text-brand-cream',
+    loading: 'border-white/20 text-brand-cream/90',
+  },
+  light: {
+    base: 'border-brand-teal/40 bg-white text-brand-teal hover:bg-brand-teal hover:text-white',
+    spinner: 'text-brand-teal',
+    loading: 'border-brand-teal/30 text-brand-teal/80',
+  },
+} as const
+
+export function AuthButton({ appearance = 'dark' }: AuthButtonProps) {
   const [user, setUser] = useState<User | null>(null)
   const [isCheckingUser, setIsCheckingUser] = useState(true)
   const [isSigningOut, setIsSigningOut] = useState(false)
   const router = useRouter()
+  const styles = APPEARANCE_CLASSES[appearance]
 
   useEffect(() => {
     const supabase = createClient()
@@ -52,8 +70,10 @@ export function AuthButton() {
 
   if (isCheckingUser) {
     return (
-      <span className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-3 py-2 font-ui text-sm font-bold text-brand-cream/90">
-        <LoadingSpinner className="text-brand-cream" label="Checking session" />
+      <span
+        className={`inline-flex items-center justify-center gap-2 rounded-full border px-3 py-2 font-ui text-sm font-bold ${styles.loading}`}
+      >
+        <LoadingSpinner className={styles.spinner} label="Checking session" />
         <span>Loading</span>
       </span>
     )
@@ -64,11 +84,11 @@ export function AuthButton() {
       <button
         onClick={handleSignOut}
         disabled={isSigningOut}
-        className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-3 py-2 font-ui text-sm font-bold text-brand-cream transition hover:bg-white/10 disabled:cursor-wait disabled:opacity-70"
+        className={`inline-flex items-center justify-center gap-2 rounded-full border px-3 py-2 font-ui text-sm font-bold transition disabled:cursor-wait disabled:opacity-70 ${styles.base}`}
       >
         {isSigningOut ? (
           <>
-            <LoadingSpinner className="text-brand-cream" label="Signing out" />
+            <LoadingSpinner className={styles.spinner} label="Signing out" />
             <span>Signing Out...</span>
           </>
         ) : (
@@ -81,7 +101,7 @@ export function AuthButton() {
   return (
     <Link
       href="/login"
-      className="rounded-full border border-white/20 px-3 py-2 font-ui text-sm font-bold text-brand-cream transition hover:bg-white/10"
+      className={`inline-flex items-center justify-center rounded-full border px-3 py-2 font-ui text-sm font-bold transition ${styles.base}`}
     >
       Sign In
     </Link>

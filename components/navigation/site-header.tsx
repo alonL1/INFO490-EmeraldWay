@@ -4,7 +4,6 @@ import { useState } from "react";
 import { CompassMark } from "@/components/brand/compass-mark";
 import { Wordmark } from "@/components/brand/wordmark";
 import { RoleNav } from "@/components/navigation/role-nav";
-import { AuthButton } from "@/components/auth/auth-button";
 import type { AppRole } from "@/lib/types/app-role";
 import type { NavKey } from "@/lib/types/nav";
 import { cn } from "@/lib/utils/cn";
@@ -54,7 +53,6 @@ export function SiteHeader({ activeKey, role }: SiteHeaderProps) {
             <p className="site-header__role-label">
               {role === "organization" ? "Organization" : "Donor"}
             </p>
-            <AuthButton />
           </div>
         </div>
       </div>
