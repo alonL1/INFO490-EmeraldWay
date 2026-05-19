@@ -2,6 +2,7 @@ import Link from "next/link";
 import { PageShell } from "@/components/layout/page-shell";
 import { StatusPill } from "@/components/shared/status-pill";
 import { DonationDecisionButtons } from "@/components/donations/donation-decision-buttons";
+import { MessageDonorButton } from "@/components/messages/message-donor-button";
 import { requireRole } from "@/lib/server/viewer";
 
 function formatDateLabel(value: string) {
@@ -17,7 +18,7 @@ export default async function IncomingDonationsPage() {
   const { data: donations } = await viewer.supabase
     .from("donations")
     .select(
-      "id, donor_display_name, status, confirmation_code, created_at, listings(title)",
+      "id, donor_display_name, status, confirmation_code, created_at, listings(title), message_threads(id)",
     )
     .eq("organization_id", viewer.user.id)
     .order("created_at", { ascending: false });
@@ -47,6 +48,7 @@ export default async function IncomingDonationsPage() {
               const listing =
                 (donation.listings as unknown as { title?: string | null } | null) ?? null;
               const title = listing?.title ?? "Donation Request";
+              const threadId = (donation.message_threads as unknown as { id: string }[] | null)?.[0]?.id ?? null;
 
               return (
                 <article key={donation.id} className="wishlist-row relative">
@@ -71,6 +73,11 @@ export default async function IncomingDonationsPage() {
                       donationId={donation.id}
                       redirectTo="/incoming-donations"
                       status={donation.status}
+                    />
+                    <MessageDonorButton
+                      donationId={donation.id}
+                      threadId={threadId}
+                      redirectTo="/incoming-donations"
                     />
                     <Link
                       href={`/incoming-donations/${donation.id}`}
