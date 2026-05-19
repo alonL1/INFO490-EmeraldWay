@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DonationDecisionButtons } from "@/components/donations/donation-decision-buttons";
+import { MessageDonorButton } from "@/components/messages/message-donor-button";
 import { PageShell } from "@/components/layout/page-shell";
 import { ListingDetailView } from "@/components/listings/listing-detail-view";
 import { StatusPill } from "@/components/shared/status-pill";
@@ -30,7 +31,7 @@ export default async function IncomingDonationDetailPage({
   const { data: donation } = await viewer.supabase
     .from("donations")
     .select(
-      "*, listings(id, title, description, item_type, condition, location, priority, status, image_url, profiles(org_name))",
+      "*, listings(id, title, description, item_type, condition, location, priority, status, image_url, profiles(org_name)), message_threads(id)",
     )
     .eq("id", donationId)
     .eq("organization_id", viewer.user.id)
@@ -57,6 +58,8 @@ export default async function IncomingDonationDetailPage({
           }
         | null
     ) ?? null;
+
+  const threadId = (donation.message_threads as unknown as { id: string }[] | null)?.[0]?.id ?? null;
 
   const orgName = listing?.profiles?.org_name ?? "Organization";
   const title = listing?.title ?? "Donation Request";
@@ -116,6 +119,11 @@ export default async function IncomingDonationDetailPage({
                   donationId={donation.id}
                   redirectTo="/incoming-donations"
                   status={donation.status}
+                />
+                <MessageDonorButton
+                  donationId={donation.id}
+                  threadId={threadId}
+                  redirectTo={`/incoming-donations/${donation.id}`}
                 />
               </div>
 

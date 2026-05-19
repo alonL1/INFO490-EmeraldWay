@@ -439,6 +439,14 @@ img {
     color: rgb(var(--text-primary-rgb) / 0.55);
   }
 
+  .messages-thread--button { @apply w-full text-left; }
+  .message-composer__form { @apply mt-6 flex items-end gap-3; }
+  .message-composer__input { @apply flex-1 resize-none rounded-[18px] border border-border-accent bg-white px-4 py-3 font-body text-sm; }
+  .message-composer__submit { @apply rounded-full bg-brand-forest px-5 py-3 font-ui text-sm font-bold text-brand-cream disabled:opacity-50; }
+  .message-bubble__row { @apply group flex flex-col gap-1; }
+  .message-bubble__report { @apply hidden text-[10px] uppercase tracking-wide text-text-primary/40 group-hover:inline; }
+  .messages-empty { @apply p-8 text-center font-body text-sm text-text-primary/60; }
+
   .wishlist-shell {
     @apply rounded-[28px] border bg-white p-5 shadow-panel;
     border-color: rgb(var(--brand-forest-rgb) / 0.1);
